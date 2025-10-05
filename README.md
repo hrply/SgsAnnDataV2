@@ -111,18 +111,18 @@ BiocMamager::install(c("imager", "magick") # This two packages are easy to retur
 devtools::install_github("bio-xtt/SgsAnnDataV2")
 ```
 
-## for github packages install
+> ### for github packages install
 
-Use the code to add token to R
-```
-install.packages("gitcreds")
-usethis::create_github_token()
-gitcreds::gitcreds_set()
-```
+> Use the code to add token to R
+> ```
+> install.packages("gitcreds")
+> usethis::create_github_token()
+> gitcreds::gitcreds_set()
+> ```
 
 **Remember install all packages in renv environment!** 
 
-run ``renv::snapshot()``
+After finishing installation of all packages, run ``renv::snapshot()`` to update lock file.
 
 ---
 ---
