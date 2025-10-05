@@ -1,3 +1,94 @@
+# How to install SgsAnnData in conda
+
+The correct steps to install SgsAnnData without repeating bugs of dependencies: 
+## Install R-base=4.4.1~4.4.3 and essential packages
+It's recommended to install R-base 4.4.1 and then upgrade to 4.4.3 as the renv.lock of ArchR is builded in R 4.4.1.
+
+```
+conda install -c conda-forge r-base=4.4.3 radian rhash r-essentials compilers make gcc cmake wheel curl
+conda install -c conda-forge xz bzip2 zlib xorg-x11-proto-devel-cos7-x86_64 libx11-devel-cos7-x86_64 libx11-cos7-x86_64 libxext-devel-cos7-x86_64 libxext-cos7-x86_64 cairo-devel-cos7-x86_64 cairo-cos7-x86_64 libxt-devel-cos7-x86_64 libzlib  libiconv libxml2-devel-cos7-x86_64 glpk r-glpkapi r-rglpk libgit2 r-git2r gsl r-gsl udunits2 libudunits2 r-udunits2 pandoc gdal libgdal libgdal-core-devel imagemagick r-devtools r-remotes
+```
+## Install ArchR and Seurat with environment packages by renv
+### install renv and environment packages
+Create renv project file and run R in this path
+```
+conda create -n sgs  # Assuming the conda environment name of SgsAnnData is sgs
+conda activate sgs
+mkdir -p $CONDA_PREFIX/renv && cd $CONDA_PREFIX/renv 
+R
+```
+Then install renv and packages
+```
+if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes") #if not install r-remotes
+if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools") #if not install r-devtools
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+BiocManager::install(version = "3.20")
+install.packages("renv")
+library(renv)
+setwd("$CONDA_PREFIX/renv")
+download.file(url = "https://pub-9ae435458ecc412abbbc9420a502ec38.r2.dev/renv.lock", destfile = "./renv.lock")
+renv::init(settings = list(sandbox.enabled = FALSE))
+renv::settings$external.libraries("$CONDA_PREFIX/lib/R/library")
+renv::init()
+```
+Tips: If some packages install failed, generally, errors occurs when "cannot find xx.so or xx.h", so you can read the error messages and install the nessary library packages. 
+
+### install ArchR and Seurat
+Then install ArchR & Seurat in R:
+```
+install.packages('Seurat')
+setRepositories(ind = 1:3, addURLs = c('https://satijalab.r-universe.dev', 'https://bnprks.r-universe.dev/'))
+install.packages(c("BPCells", "presto", "glmGamPoi"))
+devtools::install_github("GreenleafLab/ArchR", ref="master", repos = BiocManager::repositories())
+library(ArchR)
+ArchR::installExtraPackages()
+q()
+```
+
+## Install Giotto
+For Linux, there are several prerequisite installs: GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3
+```
+sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+sudo apt-get update
+sudo apt-get install libgdal-dev libgeos-dev libproj-dev libtbb-dev libnetcdf-dev
+conda install -c conda-forge gdal libgdal geos proj sqlite libsqlite
+```
+Then run in R
+```
+install.packages("terra") # if terra version is lower than 1.8-21, please run ``install.packages("https://cloud.r-project.org/src/contrib/Archive/terra/terra_1.8-29.tar.gz", repos = NULL, type = "source")
+if(!"pak" %in% installed.packages()) install.packages("pak")
+pak::pkg_install("drieslab/Giotto")
+library("Giotto") # and install packages according to returned messages
+```
+
+## Install Signac
+
+Run in R:
+```
+setRepositories(ind=1:3) # needed to automatically install Bioconductor dependencies
+install.packages("Signac") # or "conda install -c bioconda r-signac"
+```
+***Installing genome assembly and gene annotation packages if nessary
+```
+BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'EnsDb.Hsapiens.v75'))
+BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg38', 'EnsDb.Hsapiens.v86'))
+BiocManager::install(c('BSgenome.Mmusculus.UCSC.mm10', 'EnsDb.Mmusculus.v79'))
+```
+## Install Seurat supporting packages
+
+Run in R
+```
+setRepositories(ind = 1:3, addURLs = c('https://satijalab.r-universe.dev', 'https://bnprks.r-universe.dev/'))
+install.packages(c("BPCells", "presto", "glmGamPoi"))
+remotes::install_github("satijalab/seurat-data", quiet = TRUE)
+remotes::install_github("satijalab/azimuth", quiet = TRUE)
+remotes::install_github("satijalab/seurat-wrappers", quiet = TRUE)
+```
+
+
+#########################################################################################################################################
+
+# forked from bio-xtt
 # SgsAnnData
 SgsAnnData is an R package that facilitates the seamless conversion of single-cell analysis object from popular tools such as Seurat, Giotto, Signac, and ArchR into the AnnData. This format can be directly visualized in SGS which is an interactive browser for single-cell and spatial multimodal datasets.
 
