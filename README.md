@@ -122,7 +122,99 @@ devtools::install_github("bio-xtt/SgsAnnDataV2")
 
 **Remember install all packages in renv environment!** 
 
-After finishing installation of all packages, run ``renv::snapshot()`` to update lock file.
+After finishing installation of all packages, update the lock file.
+
+```
+all_packages <- installed.packages()[, "Package"]
+renv::snapshot(packages = all_packages)
+```
+
+## Experimental
+
+Updating the BiocManager to 3.20:
+
+1. Open the lockfile and change the repos like:
+>Before
+```
+{
+  "R": {
+    "Version": "4.4.3",
+    "Repositories": [
+      {
+        "Name": "BioCsoft",
+        "URL": "https://bioconductor.org/packages/3.19/bioc"
+      },
+      {
+        "Name": "BioCann",
+        "URL": "https://bioconductor.org/packages/3.19/data/annotation"
+      },
+      {
+        "Name": "BioCexp",
+        "URL": "https://bioconductor.org/packages/3.19/data/experiment"
+      },
+      {
+        "Name": "BioCworkflows",
+        "URL": "https://bioconductor.org/packages/3.19/workflows"
+      },
+      {
+        "Name": "BioCbooks",
+        "URL": "https://bioconductor.org/packages/3.19/books"
+      },
+      {
+        "Name": "CRAN",
+        "URL": "https://p3m.dev/cran/2024-10-30"
+      }
+    ]
+  },
+  "Bioconductor": {
+    "Version": "3.19"
+  },
+```
+>After
+```
+{
+  "R": {
+    "Version": "4.4.3",
+    "Repositories": [
+      {
+        "Name": "BioCsoft",
+        "URL": "https://bioconductor.org/packages/3.20/bioc"
+      },
+      {
+        "Name": "BioCann",
+        "URL": "https://bioconductor.org/packages/3.20/data/annotation"
+      },
+      {
+        "Name": "BioCexp",
+        "URL": "https://bioconductor.org/packages/3.20/data/experiment"
+      },
+      {
+        "Name": "BioCworkflows",
+        "URL": "https://bioconductor.org/packages/3.20/workflows"
+      },
+      {
+        "Name": "BioCbooks",
+        "URL": "https://bioconductor.org/packages/3.20/books"
+      },
+      {
+        "Name": "CRAN",
+        "URL": "https://mirrors.zju.edu.cn/CRAN" # change to your prefered repos
+      }
+    ]
+  },
+  "Bioconductor": {
+    "Version": "3.20"
+  },
+```
+
+2. restart R and delete the old version.
+    ``renv::remove("BiocManager")``
+3. install the new version. 
+    ```
+    renv::install("BiocManager@1.3.25")
+    BiocManager::install(version = "3.20")
+    ```
+4. update other packages if nessary. ``BiocManager::install()``
 
 ---
 ---
