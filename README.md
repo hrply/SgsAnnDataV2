@@ -74,19 +74,19 @@ BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'EnsDb.Hsapiens.v75'))
 BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg38', 'EnsDb.Hsapiens.v86'))
 BiocManager::install(c('BSgenome.Mmusculus.UCSC.mm10', 'EnsDb.Mmusculus.v79'))
 ```
-## Install Seurat supporting packages
+## Install Seurat supporting packages if nessary
 
 Run in R
 ```
 setRepositories(ind = 1:3, addURLs = c('https://satijalab.r-universe.dev', 'https://bnprks.r-universe.dev/'))
 install.packages(c("BPCells", "presto", "glmGamPoi"))
-remotes::install_github("satijalab/seurat-data", quiet = TRUE)
-remotes::install_github("satijalab/azimuth", quiet = TRUE)
-remotes::install_github("satijalab/seurat-wrappers", quiet = TRUE)
+remotes::install_github("satijalab/seurat-data", force = TRUE)
+remotes::install_github("satijalab/seurat-wrappers", force = TRUE)
+remotes::install_github("satijalab/azimuth", ref = 'master')
 ```
 
-
-#########################################################################################################################################
+---
+---
 
 # forked from bio-xtt
 # SgsAnnData
