@@ -233,6 +233,11 @@ Currently, SgsAnndata can only be installed through GitHub. However, we are acti
 ```
 devtools::install_github("bio-xtt/SgsAnnDataV2")
 ```
+## Run SgsAnnData
+```
+renv::activate()
+library(anndata)
+```
 
 ## Usage
 ### Seurat to AnnData
